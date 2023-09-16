@@ -1,6 +1,7 @@
 import collections
-import undetected_chromedriver as uc
 from abc import abstractmethod
+from .flaresolverr import Flaresolverr
+from bs4 import BeautifulSoup
 
 class Scraper(object):
     def __init__(self):
@@ -26,10 +27,6 @@ class Scraper(object):
     def get_scrapers():
         return Scraper.__subclasses__()
 
-    def init_driver(self):
-        if not self.driver:
-            self.driver = uc.Chrome(headless=True, use_subprocess=False)
-
 class MaxJAV(Scraper):
     NAME="MaxJAV"
     SEARCH_URL="https://maxjav.com/?s=%s"
@@ -39,6 +36,31 @@ class MaxJAV(Scraper):
         pass
 
     def search(self, jav_code):
-        self.init_driver()
-        self.driver.get(self.SEARCH_URL.replace('%s', jav_code))
-        print(self.driver.page_source)
+        flaresolverr = Flaresolverr()
+        research = flaresolverr.read_url_and_retry(self.SEARCH_URL.replace('%s', jav_code))
+        soup = BeautifulSoup(research, 'html.parser')
+
+        priority = None
+        url = False
+        for result in soup.select('div#wrapper h2.title a'):
+            # Exclude invalid items
+            if not (result.text.startswith(jav_code) or ' ' + jav_code in result.text):
+                continue
+
+            # Prioritize 8K in VR
+            if result.text.endswith(' – VR'):
+                if result.text.startswith('[8K] '):
+                    return result.get('href')
+                else:
+                    url = result.get('href')
+
+            # Exclude 4K releases
+            if result.text.endswith(' – 4K'):
+                continue
+
+            if result.text.endswith(' – UMR'):
+                return result.get('href')
+
+            url = result.get('href')
+
+        return url

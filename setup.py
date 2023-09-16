@@ -9,7 +9,8 @@ setup(
     author_email='libertx@ltsp.fr',
     description="LTSP Tools",
     install_requires=[
-        "setuptools",
-        "undetected-chromedriver==3.5.3"
+        "setuptools"
+        "bs4",
+        "lxml"
     ]
 )
