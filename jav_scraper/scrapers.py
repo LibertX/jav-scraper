@@ -1,4 +1,5 @@
 import collections
+import re
 from abc import abstractmethod
 from .flaresolverr import Flaresolverr
 from bs4 import BeautifulSoup
@@ -9,6 +10,10 @@ class Scraper(object):
 
     @abstractmethod
     def search(self, jav_code):
+        pass
+
+    @abstractmethod
+    def get_download_link(self, url):
         pass
 
     @property
@@ -30,21 +35,28 @@ class Scraper(object):
 class MaxJAV(Scraper):
     NAME="MaxJAV"
     SEARCH_URL="https://maxjav.com/?s=%s"
-    driver = None
 
     def __init__(self):
         pass
 
     def search(self, jav_code):
+        url = self.search_url(jav_code)
+        if not url:
+            return False
+
+        return self.get_download_link(url)
+
+    def search_url(self, jav_code):
+        jav_code = jav_code.upper()
         flaresolverr = Flaresolverr()
         research = flaresolverr.read_url_and_retry(self.SEARCH_URL.replace('%s', jav_code))
         soup = BeautifulSoup(research, 'html.parser')
 
-        priority = None
+
         url = False
         for result in soup.select('div#wrapper h2.title a'):
             # Exclude invalid items
-            if not (result.text.startswith(jav_code) or ' ' + jav_code in result.text):
+            if not re.search('^(\[.*\] )?' + jav_code + '\ ', result.text):
                 continue
 
             # Prioritize 8K in VR
@@ -64,3 +76,25 @@ class MaxJAV(Scraper):
             url = result.get('href')
 
         return url
+
+    def get_download_link(self, dl_url):
+        return_url = []
+        flaresolverr = Flaresolverr()
+        research = flaresolverr.read_url_and_retry(dl_url)
+        soup = BeautifulSoup(research, 'html.parser')
+        entries = soup.select('div#content div.post div.entry p')
+        for url in entries[1].select('a'):
+            if '.8K.' in url.text:
+                return_url += [url.get('href')]
+
+        if len(return_url):
+            return return_url
+
+        for i in range(len(entries)):
+            for url in entries[-i].select('a'):
+                return_url += [url.get('href')]
+
+            if len(return_url):
+                return return_url
+
+        return False
