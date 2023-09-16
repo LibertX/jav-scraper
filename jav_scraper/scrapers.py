@@ -83,14 +83,8 @@ class MaxJAV(Scraper):
         research = flaresolverr.read_url_and_retry(dl_url)
         soup = BeautifulSoup(research, 'html.parser')
         entries = soup.select('div#content div.post div.entry p')
-        for url in entries[1].select('a'):
-            if '.8K.' in url.text:
-                return_url += [url.get('href')]
 
-        if len(return_url):
-            return return_url
-
-        for i in range(len(entries)):
+        for i in range(1,len(entries)):
             for url in entries[-i].select('a'):
                 return_url += [url.get('href')]
 
