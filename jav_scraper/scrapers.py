@@ -1,13 +1,10 @@
 import collections
 import re
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from .flaresolverr import Flaresolverr
 from bs4 import BeautifulSoup
 
-class Scraper(object):
-    def __init__(self):
-        raise TypeError("Cannot instantiate Scraper classes")
-
+class Scraper(ABC):
     @abstractmethod
     def search(self, jav_code):
         pass
@@ -18,26 +15,18 @@ class Scraper(object):
 
     @property
     @abstractmethod
-    def NAME():
+    def name():
         pass
 
     @property
     @abstractmethod
-    def SEARCH_URL():
+    def searchurl(self):
         pass
 
-    def get_name(self):
-        return self.NAME
-
-    def get_scrapers():
-        return Scraper.__subclasses__()
 
 class MaxJAV(Scraper):
-    NAME="MaxJAV"
-    SEARCH_URL="https://maxjav.com/?s=%s"
-
-    def __init__(self):
-        pass
+    name = "MaxJAV"
+    searchurl = "https://maxjav.com/?s=%s"
 
     def search(self, jav_code):
         url = self.search_url(jav_code)
@@ -49,7 +38,7 @@ class MaxJAV(Scraper):
     def search_url(self, jav_code):
         jav_code = jav_code.upper()
         flaresolverr = Flaresolverr()
-        research = flaresolverr.read_url_and_retry(self.SEARCH_URL.replace('%s', jav_code))
+        research = flaresolverr.read_url_and_retry(self.searchurl.replace('%s', jav_code))
         soup = BeautifulSoup(research, 'html.parser')
 
 
@@ -85,7 +74,7 @@ class MaxJAV(Scraper):
         entries = soup.select('div#content div.post div.entry p')
 
         for i in range(1,len(entries)):
-            for url in entries[-i].select('a'):
+            for url in entries[i].select('a'):
                 return_url += [url.get('href')]
 
             if len(return_url):

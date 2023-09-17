@@ -11,6 +11,6 @@ setup(
     install_requires=[
         "setuptools"
         "bs4",
-        "lxml"
+        "sqlalchemy"
     ]
 )

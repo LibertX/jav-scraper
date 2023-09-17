@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from . import log, scrapers
+import sys
 import argparse
 
 logger = log.setup_logging(__name__)
@@ -11,9 +12,8 @@ def main():
     args = parser.parse_args()
 
     if args.search:
-        for scraper_class in scrapers.Scraper.get_scrapers():
-            scraper = scraper_class()
-            print(scraper.search(args.search))
+        for scraper in scrapers.Scraper.__subclasses__():
+            print(scraper().search(args.search))
 
 if __name__ == "__main__":
     main()
