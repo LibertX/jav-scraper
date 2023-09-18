@@ -1,26 +1,19 @@
 import json
-from sqlalchemy import DateTime, String, Integer, ForeignKey
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
-from typing import TYPE_CHECKING
+import datetime
 
-from . import Base
+from .. import db
 
-if TYPE_CHECKING:
-    from . import JAVMovie
-
-class Grab(Base):
+class Grab(db.Model):
     __tablename__ = "grab_history"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    date: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now())
-    javmovie: Mapped["JAVMovie"] = relationship(back_populates="grabs")
-    javmovie_id: Mapped[int] = mapped_column(Integer, ForeignKey("jav_movie.id"))
-    download_page: Mapped[str] = mapped_column(String())
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
-    _download_links: Mapped[str] = mapped_column(String())
+    javmovie_id = db.Column(db.Integer, db.ForeignKey('jav_movie.id'), nullable=False)
+
+    download_page = db.Column(db.String)
+
+    _download_links = db.Column(db.String)
     @property
     def download_links(self):
         return json.loads(self._download_links)

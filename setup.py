@@ -11,6 +11,9 @@ setup(
     install_requires=[
         "setuptools"
         "bs4",
-        "sqlalchemy"
+        "sqlalchemy",
+        "flask",
+        "flask-migrate",
+        "Flask-SQLAlchemy"
     ]
 )

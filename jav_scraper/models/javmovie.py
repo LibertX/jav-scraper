@@ -1,23 +1,14 @@
-from typing import List
-from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
-from typing import TYPE_CHECKING
+from .. import db
 
-from . import Base
-
-if TYPE_CHECKING:
-    from . import Grab, JAVQuality
-
-class JAVMovie(Base):
+class JAVMovie(db.Model):
     __tablename__ = "jav_movie"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    code: Mapped[str] = mapped_column(String())
-    status: Mapped[str] = mapped_column(String())
+    id: Mapped[int] = db.Column(db.Integer, primary_key=True)
+    code: Mapped[str] = db.Column(db.String)
+    status = db.Column(db.String)
+    grabs = db.relationship('Grab', backref='jav_movie', lazy=True)
 
-    quality_id: Mapped[int] = mapped_column(Integer, ForeignKey("jav_quality.id"))
-    quality: Mapped["JAVQuality"] = relationship("JAVQuality")
+    quality_id = db.Column(db.Integer, db.ForeignKey("jav_quality.id"), nullable=True)
+    quality = db.relationship("JAVQuality")
 
-    grabs: Mapped[List["Grab"]] = relationship()
