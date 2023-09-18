@@ -3,9 +3,12 @@ from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
+from typing import TYPE_CHECKING
 
-from .base import Base
+from . import Base
 
+if TYPE_CHECKING:
+    from . import Grab, JAVQuality
 
 class JAVMovie(Base):
     __tablename__ = "jav_movie"

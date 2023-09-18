@@ -1,7 +1,5 @@
-import collections
 import os
 import requests
-import json
 
 class Flaresolverr():
     _instances = {}
@@ -9,10 +7,6 @@ class Flaresolverr():
     _flaresolverr_session = None
 
     def __call__(cls, *args, **kwargs):
-        """
-        Possible changes to the value of the `__init__` argument do not affect
-        the returned instance.
-        """
         if cls not in cls._instances:
             instance = super().__call__(*args, **kwargs)
             cls._instances[cls] = instance
@@ -43,25 +37,26 @@ class Flaresolverr():
         headers = {"Content-Type": "application/json"}
         data = {
             "cmd": "request.get",
+            "maxTimeout": 10000,
             "session": self._flaresolverr_session,
             "url": url
         }
         response = requests.post(self._flaresolverr_url, headers=headers, json=data)
 
-        if response.json()['solution']['status'] != 200:
-            self.destroy_session()
+        if response.json()['status'] != "ok":
+            return False
 
         return response.json()
 
     def read_url_and_retry(self, url):
         response = self.read_url(url)
-        if response['solution']['status'] == 200:
+        if response:
             return response['solution']['response']
         else:
             self.destroy_session()
             self.create_session()
             response = self.read_url(url)
-            if response['solution']['status'] == 200:
+            if response:
                 return response['solution']['response']
             else:
                 return False
@@ -73,4 +68,4 @@ class Flaresolverr():
             "session": self._flaresolverr_session
         }
         response = requests.post(self._flaresolverr_url, headers=headers, json=data)
-        return response['status'] == 'ok'
+        return response.json()['status'] == 'ok'

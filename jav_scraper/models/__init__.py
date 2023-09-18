@@ -1,6 +1,11 @@
+from .base import Base
+from .grab import Grab
+from .javmovie import JAVMovie
+from .javquality import JAVQuality
+
 __all__ = [
-    "base",
-    "javmovie",
-    "javquality",
-    "grab"
+    "Base",
+    "Grab",
+    "JAVMovie",
+    "JAVQuality"
 ]

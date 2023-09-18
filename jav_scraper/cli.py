@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 
-from . import log, scrapers
-import sys
 import argparse
 
-logger = log.setup_logging(__name__)
+from . import scrapers
+from . import utils
+
+logger = utils.Log().setup_logging(__name__)
 
 def main():
     parser = argparse.ArgumentParser(description='JAV Scraper')

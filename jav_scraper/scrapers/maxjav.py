@@ -1,28 +1,9 @@
-import collections
 import re
-from abc import ABC, abstractmethod
-from .flaresolverr import Flaresolverr
 from bs4 import BeautifulSoup
 
-class Scraper(ABC):
-    @abstractmethod
-    def search(self, jav_code):
-        pass
-
-    @abstractmethod
-    def get_download_link(self, url):
-        pass
-
-    @property
-    @abstractmethod
-    def name():
-        pass
-
-    @property
-    @abstractmethod
-    def searchurl(self):
-        pass
-
+from ..utils import Flaresolverr
+from ..models import Grab
+from . import Scraper
 
 class MaxJAV(Scraper):
     name = "MaxJAV"
@@ -33,7 +14,10 @@ class MaxJAV(Scraper):
         if not url:
             return False
 
-        return self.get_download_link(url)
+        grab = Grab()
+        grab.download_page = url
+        grab.download_links = self.get_download_link(url)
+        return grab
 
     def search_url(self, jav_code):
         jav_code = jav_code.upper()
