@@ -1,6 +1,7 @@
-from flask import jsonify
+from flask import jsonify, request
 
 from . import app
+from . import db
 from . import models
 
 
@@ -13,6 +14,19 @@ def get_movies():
         movies.append(movie)
 
     return jsonify(movies)
+
+
+@app.route('/movies', methods=['POST'])
+def add_movie():
+    if models.JAVMovie.query.filter_by(code=request.json['code']).first():
+        return '', 409
+    movie = models.JAVMovie()
+    movie.code = request.json['code']
+    movie.status = 'pending'
+    db.session.add(movie)
+    db.session.commit()
+    return '', 204
+
 
 @app.route('/grabs', methods=['GET'])
 def get_grabs():

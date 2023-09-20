@@ -61,7 +61,7 @@ class MaxJAV(Scraper):
             for url in entries[i].select('a'):
                 return_url += [url.get('href')]
 
-            if len(return_url):
+            if return_url:
                 return return_url
 
         return False
