@@ -3,5 +3,6 @@ from .log import Log
 
 __all__ = [
     "Flaresolverr",
-    "Log"
+    "Log",
+    "MissingEnvironmentException"
 ]

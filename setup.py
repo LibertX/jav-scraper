@@ -14,6 +14,7 @@ setup(
         "sqlalchemy",
         "flask",
         "flask-migrate",
-        "Flask-SQLAlchemy"
+        "Flask-SQLAlchemy",
+        "myjdapi"
     ]
 )
