@@ -28,6 +28,14 @@ def add_movie():
     return '', 204
 
 
+@app.route('/movie/<code>', methods=['DELETE'])
+def remove_movie(code):
+    movie = models.JAVMovie.query.filter_by(code=code).first_or_404()
+    db.session.delete(movie)
+    db.session.commit()
+    return '', 204
+
+
 @app.route('/grabs', methods=['GET'])
 def get_grabs():
     grabs = []
