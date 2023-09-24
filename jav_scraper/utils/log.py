@@ -1,21 +1,19 @@
 import logging
 import sys
 
-log_level = logging.INFO
+from .singleton import Singleton
+
+class Log(metaclass = Singleton):
+    _level = None
 
 
-class Log():
-    level = logging.INFO
+    def __init__(self):
+        self._level = logging.INFO
 
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            instance = super().__call__(*args, **kwargs)
-            cls._instances[cls] = instance
-        return cls._instances[cls]
 
     def setup_logging(self, name=None):
         logger = logging.getLogger(name)
-        logger.setLevel(level=log_level)
+        logger.setLevel(level=self._level)
 
         if not logger.hasHandlers():
             stream = logging.StreamHandler(sys.stdout)
@@ -26,9 +24,9 @@ class Log():
 
 
     def enable_debug(self):
-        self.level = logging.DEBUG
+        self._level = logging.DEBUG
         for name in logging.root.manager.loggerDict:
-            logging.getLogger(name).setLevel(log_level)
+            logging.getLogger(name).setLevel(self._level)
 
 
     class CustomFormatter(logging.Formatter):

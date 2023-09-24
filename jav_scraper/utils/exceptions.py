@@ -1,2 +1,2 @@
-class MissingEnvironmentVariable(Exception):
+class MissingEnvironmentException(Exception):
     pass

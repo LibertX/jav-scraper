@@ -7,7 +7,8 @@ class Grab(db.Model):
     __tablename__ = "grab_history"
 
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    date = db.Column(db.DateTime, default=datetime.datetime.utcnow, nullable=False)
+    state = db.Column(db.String, nullable=False)
 
     javmovie_id = db.Column(db.Integer, db.ForeignKey('jav_movie.id'), nullable=False)
 

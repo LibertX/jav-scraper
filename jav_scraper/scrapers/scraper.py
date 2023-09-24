@@ -1,6 +1,10 @@
 from abc import ABC, abstractmethod
 
+from ..utils import Log
+
 class Scraper(ABC):
+    _logger = None
+
     @abstractmethod
     def search(self, jav_code):
         pass
@@ -18,4 +22,7 @@ class Scraper(ABC):
     @abstractmethod
     def searchurl(self):
         pass
+
+    def __init__(self):
+        self._logger = Log().setup_logging(__name__)
 

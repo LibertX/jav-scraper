@@ -9,6 +9,10 @@ class MaxJAV(Scraper):
     name = "MaxJAV"
     searchurl = "https://maxjav.com/?s=%s"
 
+    def __init__(self):
+        super(MaxJAV, self).__init__()
+
+
     def search(self, jav_code):
         url = self.search_url(jav_code)
         if not url:
@@ -17,9 +21,12 @@ class MaxJAV(Scraper):
         grab = Grab()
         grab.download_page = url
         grab.download_links = self.get_download_link(url)
+        grab.state = 'pending'
         return grab
 
+
     def search_url(self, jav_code):
+        self._logger.debug(f'Searching for {jav_code} with MaxJAV')
         jav_code = jav_code.upper()
         flaresolverr = Flaresolverr()
         research = flaresolverr.read_url_and_retry(self.searchurl.replace('%s', jav_code))
@@ -49,6 +56,7 @@ class MaxJAV(Scraper):
             url = result.get('href')
 
         return url
+
 
     def get_download_link(self, dl_url):
         return_url = []
