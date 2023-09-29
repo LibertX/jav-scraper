@@ -5,5 +5,5 @@ from .javquality import JAVQuality
 __all__ = [
     "Grab",
     "JAVMovie",
-    "JAVQuality"
+    "JAVQuality",
 ]

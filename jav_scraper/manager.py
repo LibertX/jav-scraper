@@ -1,4 +1,5 @@
 import threading
+from sqlalchemy import func
 
 from . import scrapers
 from . import downloaders
@@ -28,12 +29,21 @@ class Manager(threading.Thread):
         while True:
             self._logger.info('Processing movies...')
             with app.app_context():
-                pending_movies = models.JAVMovie.query.all()
+                pending_movies = db.session.query(models.JAVMovie).filter(~models.JAVMovie.id.in_(db.session.query(models.Grab.javmovie_id))).all()
+                pending_movies_upgrades = db.session.query(models.JAVMovie, models.JAVQuality, models.Grab).filter(models.Grab.javmovie_id == models.JAVMovie.id, models.JAVQuality.id == models.Grab.quality_id).group_by(models.JAVMovie).having(func.max(models.JAVQuality.priority) < 100).all()
+                pending_movies += [item[0] for item in pending_movies_upgrades]
+
                 for movie in pending_movies:
+                    self._logger.info(f'Searching for movie {movie.code}')
                     for scraper in scrapers.Scraper.__subclasses__():
-                        self._logger.info(f'Searching for movie {movie.code}')
                         grab = scraper().search(movie.code)
                         if grab:
+                            # Check if existing quality is better
+                            existing_priority = db.session.query(func.max(models.JAVQuality.priority)).filter(models.Grab.javmovie_id == movie.id).filter(models.Grab.quality_id == models.JAVQuality.id).scalar()
+                            if existing_priority and grab.quality.priority <= existing_priority:
+                                self._logger.debug(f'Existing quality has equal or lower priority ({existing_priority}) than existing ({grab.quality.priority}), skipping.')
+                                continue
+
                             self._logger.info(f'Found movie {movie.code}')
                             movie.grabs += [grab]
                             db.session.add(movie)

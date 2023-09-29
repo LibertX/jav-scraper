@@ -12,6 +12,9 @@ class Grab(db.Model):
 
     javmovie_id = db.Column(db.Integer, db.ForeignKey('jav_movie.id'), nullable=False)
 
+    quality_id = db.Column(db.Integer, db.ForeignKey("jav_quality.id"), nullable=True)
+    quality = db.relationship("JAVQuality")
+
     download_page = db.Column(db.String)
 
     _download_links = db.Column(db.String)
