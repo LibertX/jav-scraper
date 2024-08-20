@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import List
 
 from ..utils import Log
 
@@ -10,5 +11,11 @@ class Downloader(ABC):
 
 
     @abstractmethod
-    def add_url(self, url):
+    def add_url(self, url: str):
         pass
+
+
+    @abstractmethod # type: ignore[no-redef]
+    def add_url(self, url: List[str]):
+        pass
+

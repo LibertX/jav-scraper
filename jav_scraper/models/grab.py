@@ -1,9 +1,13 @@
 import json
 import datetime
+from sqlalchemy.orm import DeclarativeMeta
 
 from .. import db
 
-class Grab(db.Model):
+BaseModel: DeclarativeMeta = db.Model
+
+
+class Grab(BaseModel):
     __tablename__ = "grab_history"
 
     id = db.Column(db.Integer, primary_key=True)

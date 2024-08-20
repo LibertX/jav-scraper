@@ -1,7 +1,11 @@
 from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import DeclarativeMeta
 from .. import db
 
-class JAVMovie(db.Model):
+BaseModel: DeclarativeMeta = db.Model
+
+
+class JAVMovie(BaseModel):
     __tablename__ = "jav_movie"
 
     id: Mapped[int] = db.Column(db.Integer, primary_key=True)

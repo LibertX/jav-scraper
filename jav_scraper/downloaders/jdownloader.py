@@ -1,6 +1,7 @@
-import myjdapi
+import myjdapi # type: ignore
 import os
-from multipledispatch import dispatch
+from multimethod import multimethod
+from typing import List
 
 from . import Downloader
 from ..utils import MissingEnvironmentException
@@ -24,14 +25,13 @@ class JDownloader(Downloader):
         self._logger.debug('JDownloader downloader initialized')
 
 
-    @dispatch(str)
-    def add_url(self, url):
+    @multimethod
+    def add_url(self, url: str) -> bool:
         self._logger.debug(f'Adding {url} to JDownloader...')
         self._jdownloader.linkgrabber.add_links([{'autostart': True, 'links': url}])
         return True
 
 
-    @dispatch(list)
-    def add_url(self, url):
-        self._logger.debug(f'Adding {url} in list mode')
+    @multimethod
+    def add_url(self, url: List[str]) -> bool:
         return self.add_url(','.join(url))

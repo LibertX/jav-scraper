@@ -1,16 +1,11 @@
 import os
 import requests
 
-class Flaresolverr():
-    _instances = {}
-    _flaresolverr_url = None
-    _flaresolverr_session = None
+from .singleton import Singleton
 
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            instance = super().__call__(*args, **kwargs)
-            cls._instances[cls] = instance
-        return cls._instances[cls]
+class Flaresolverr(metaclass = Singleton):
+    _flaresolverr_url: str
+    _flaresolverr_session: str
 
     def __init__(self):
         self._flaresolverr_url = os.environ.get('FLARESOLVERR_URL')

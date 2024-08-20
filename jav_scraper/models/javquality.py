@@ -1,6 +1,10 @@
+from sqlalchemy.orm import DeclarativeMeta
 from .. import db
 
-class JAVQuality(db.Model):
+BaseModel: DeclarativeMeta = db.Model
+
+
+class JAVQuality(BaseModel):
     __tablename__ = "jav_quality"
 
     id = db.Column(db.Integer, primary_key=True)

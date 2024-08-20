@@ -16,6 +16,6 @@ setup(
         "flask-migrate",
         "Flask-SQLAlchemy",
         "myjdapi",
-        "multipledispatch"
+        "multimethod"
     ]
 )

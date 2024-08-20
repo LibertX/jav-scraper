@@ -1,8 +1,10 @@
 import re
 from bs4 import BeautifulSoup
+from typing import Tuple
 
 from ..utils import Flaresolverr
 from ..models import Grab
+from ..models import JAVQuality
 from . import Scraper
 from . import QualityMapper
 
@@ -24,7 +26,7 @@ class MaxJAV(Scraper):
         super(MaxJAV, self).__init__()
 
 
-    def search(self, jav_code):
+    def search(self, jav_code: str) -> Grab:
         url = self.search_url(jav_code)
         if not url:
             return False
@@ -37,8 +39,8 @@ class MaxJAV(Scraper):
         return grab
 
 
-    def search_url(self, jav_code):
-        self._logger.debug(f'Searching for {jav_code} with MaxJAV')
+    def search_url(self, jav_code: str) -> Tuple[str, JAVQuality]:
+        self._logger.debug(f'Searching for {jav_code} with {self.name}')
         jav_code = jav_code.upper()
         flaresolverr = Flaresolverr()
 
